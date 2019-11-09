@@ -1,0 +1,13 @@
+---
+-
+  gather_facts: false
+  hosts: localhost
+  tasks:
+    -
+      copy:
+        dest: "{{ vm_disk_location }}/copy.img"
+        src: "{{ image_location }}"
+      name: "Copying template file"
+  vars:
+    image_location: /var/lib/libvirt/images/skundalVM1.img
+    vm_disk_location: /var/lib/libvirt/images
