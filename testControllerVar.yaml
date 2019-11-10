@@ -1,0 +1,9 @@
+--- 
+vms: 
+- vm_name: controller1
+  mem: 512
+  contNetwork: controllerNetworkT1
+- vm_name: controller2
+  mem: 512
+  contNetwork: controllerNetworkT1
+

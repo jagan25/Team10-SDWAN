@@ -5,9 +5,30 @@
   tasks:
     -
       copy:
-        dest: "{{ vm_disk_location }}/copy.img"
+        dest: "{{ vm_disk_location }}/{{ item.vm_name }}.img"
         src: "{{ image_location }}"
       name: "Copying template file"
+      with_items: "{{ vms  }}"
+      when: item.vm_name not in disks.stdout
+    
+    - name: Create the vm '{{ item.vm_name }}'
+      virt:
+        name: "{{ item.vmname }}"
+        command: define
+        xml: '{{ lookup("template", "{{ templates/controllerTemplate.xml.j2 }}") }}'
+    - name: Start the vm '{{ item.vm_name }}'
+      virt:
+        name: "{{ item.vm_name }}"
+        state: running
+
+
   vars:
     image_location: /var/lib/libvirt/images/skundalVM1.img
     vm_disk_location: /var/lib/libvirt/images
+
+  vars_files:
+    - testControllerVar.yaml
+
+
+
+
