@@ -1,0 +1,36 @@
+- hosts: localhost
+
+  gather_facts: no
+ 
+  vars_files:
+    - controllerNetConfVar.yaml
+
+  tasks:             
+    
+    - name: Create the bridge
+      shell: brctl addbr '{{ contNetwork }}'-br
+
+    - name: Bring up the bridge
+      shell: ip link set '{{ contNetwork }}'-br up
+
+    - name: Copy the l2 network template
+      shell: cp templates/l2net.xml.j2 'templates/{{ contNetwork }}.xml'
+      
+
+    - name: Define the network '{{ contNetwork }}'
+      virt_net:
+        command: define
+        name: '{{ contNetwork }}'
+        xml: '{{ lookup("template", "templates/{{ contNetwork }}.xml"  ) }}'
+
+    - name: Start the Network
+      virt_net:
+        command: create
+        name: '{{ contNetwork }}'
+        state: active
+
+    - name: Create the VXLAN interface
+      shell: ip link add name {{ contNetwork }}-vx-{{ vxlanID }} type vxlan id {{ vxlanID }} dev {{ contNetwork }}-br remote {{ remoteIP }} dstport 4789
+
+    - name: Bring up the VXLAN interface
+      shell: ip link set {{ contNetwork }}-vx-{{ vxlanID }} up

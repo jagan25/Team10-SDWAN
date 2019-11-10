@@ -1,0 +1,13 @@
+--- 
+contNetwork: ctrlrNet1
+remoteIP: "172.16.30.2"
+vms: 
+  - 
+    mem: 512
+    vcpu: 4
+    vmName: controller1
+  - 
+    mem: 512
+    vcpu: 4
+    vmName: controller2
+vxlanID: 42
