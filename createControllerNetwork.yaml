@@ -1,23 +1,18 @@
+---
 - hosts: localhost
 
   gather_facts: no
- 
+
   vars_files:
     - controllerNetConfVar.yaml
 
-  tasks:             
-    
-    - name: Create the bridge
-      shell: brctl addbr '{{ contNetwork }}'-br
-
-    - name: Bring up the bridge
-      shell: ip link set '{{ contNetwork }}'-br up
+  tasks:
 
     - name: Define the network '{{ contNetwork }}'
       virt_net:
         command: define
         name: '{{ contNetwork }}'
-        xml: '{{ lookup("template", "templates/{{ contNetwork }}.xml"  ) }}'
+        xml: '{{ lookup("template", "templates/controllerNetworkTemplate.xml.j2"  ) }}'
 
     - name: Start the Network
       virt_net:

@@ -1,6 +1,9 @@
 --- 
 contNetwork: ctrlrNet1
 remoteIP: "172.16.30.2"
+ipNet: 10.10.10.1
+ipStart: 10.10.10.2
+ipEnd: 10.10.10.254
 vms: 
   - 
     mem: 512
