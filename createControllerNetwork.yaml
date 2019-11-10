@@ -13,10 +13,6 @@
     - name: Bring up the bridge
       shell: ip link set '{{ contNetwork }}'-br up
 
-    - name: Copy the l2 network template
-      shell: cp templates/l2net.xml.j2 'templates/{{ contNetwork }}.xml'
-      
-
     - name: Define the network '{{ contNetwork }}'
       virt_net:
         command: define
