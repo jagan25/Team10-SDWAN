@@ -1,31 +1,30 @@
---- 
-- 
+---
+-
   gather_facts: false
   hosts: localhost
-  tasks: 
-    - 
-      copy: 
+  tasks:
+    -
+      copy:
         dest: "{{ vmDiskLocation }}/{{ item.vmName }}.img"
         src: "{{ imageLocation }}"
       name: "Copying template file for {{ item.vmName }}"
-      with_items: "{{ vms }}"
-    - 
+      with_items: "{{ tenantInfo.vms }}"
+    -
       name: "Create the vm"
-      virt: 
+      virt:
         command: define
         name: "{{ item.vmName }}"
         xml: "{{ lookup( \"template\", \"templates/controllerTemplate.xml.j2\" ) }}"
-      with_items: "{{ vms }}"
-    - 
+      with_items: "{{ tenantInfo.vms }}"
+    -
       name: "Start the vm"
-      virt: 
+      virt:
         name: "{{ item.vmName }}"
         state: running
-      with_items: "{{ vms }}"
-  vars: 
+      with_items: "{{ tenantInfo.vms }}"
+  vars:
     imageLocation: /var/lib/libvirt/images/skundalVM1.img
     vmDiskLocation: /var/lib/libvirt/images
-  vars_files: 
+  vars_files:
     - controllerNetConfVar.yaml
-
 

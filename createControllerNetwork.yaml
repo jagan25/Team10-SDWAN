@@ -1,45 +1,44 @@
----
-- hosts: localhost
-
-  gather_facts: no
-
-  vars_files:
+--- 
+- 
+  gather_facts: false
+  hosts: localhost
+  tasks: 
+    - 
+      name: "Define the controller network"
+      virt_net: 
+        command: define
+        name: "{{ tenantInfo.tenantID }}_controller_net"
+        xml: "{{ lookup(\"template\", \"templates/controllerNetworkTemplate.xml.j2\"  ) }}"
+    - 
+      name: "Start the controller Network"
+      virt_net: 
+        command: create
+        name: "{{ tenantInfo.tenantID }}_controller_net"
+        state: active
+    - 
+      name: "Create the VXLAN interface"
+      shell: "ip link add name {{ tenantInfo.tenantID }}-vxlan type vxlan id {{ tenantInfo.tenantID }} dev {{ tenantInfo.tenantID }}-controllerbr remote {{ tenantInfo.remoteIP }} dstport 4789"
+    - 
+      name: "Bring up the VXLAN interface"
+      shell: "ip link set {{ tenantInfo.tenantID }}-vxlan up"
+    - 
+      name: "Create veth pair"
+      shell: "ip link add veth_{{ tenantInfo.tenantID }}c2t type veth peer name veth_t2c{{ tenantInfo.tenantID }}"
+    - 
+      name: "Add one veth to controller switch"
+      shell: "brctl addif {{ tenantInfo.tenantID }}-controllerbr veth_{{ tenantInfo.tenantID }}c2t"
+    - 
+      name: "Add another veth to the namespace"
+      shell: "ip link set dev veth_t2c{{ tenantInfo.tenantID }} netns {{ tenantInfo.tenantName }}_transit"
+    - 
+      name: "Bring up the veth interface @switch"
+      shell: "ip link set dev veth_{{ tenantInfo.tenantID }}c2t up"
+    - 
+      name: "Bring up the veth interface @ns"
+      shell: "ip netns exec {{ tenantInfo.tenantName }}_transit ip link set dev veth_t2c{{ tenantInfo.tenantID }} up"
+    - 
+      name: "Run dhclient in the namespace for this interface"
+      shell: "ip netns exec {{ tenantInfo.tenantName }}_transit dhclient veth_t2c{{ tenantInfo.tenantID }}"
+  vars_files: 
     - controllerNetConfVar.yaml
 
-  tasks:
-
-    - name: Define the network '{{ contNetwork }}'
-      virt_net:
-        command: define
-        name: '{{ contNetwork }}'
-        xml: '{{ lookup("template", "templates/controllerNetworkTemplate.xml.j2"  ) }}'
-
-    - name: Start the Network
-      virt_net:
-        command: create
-        name: '{{ contNetwork }}'
-        state: active
-
-    - name: Create the VXLAN interface
-      shell: ip link add name {{ contNetwork }}-vx-{{ vxlanID }} type vxlan id {{ vxlanID }} dev {{ contNetwork }}-br remote {{ remoteIP }} dstport 4789
-
-    - name: Bring up the VXLAN interface
-      shell: ip link set {{ contNetwork }}-vx-{{ vxlanID }} up
-
-    - name: Create veth pair
-      shell: ip link add {{ vethPair1 }} type veth peer name {{ vethPair2 }}
-
-    - name: Add one veth to controller switch
-      shell: brctl addif {{ contNetwork }}-br {{ vethPair1}}
-
-    - name: Add another veth to the namespace
-      shell: ip link set dev {{ vethPair2 }} netns {{ tenantNS }}
-
-    - name: Bring up the veth interface @switch
-      shell: ip link set dev {{ vethPair1 }} up
-
-    - name: Bring up the veth interface @ns
-      shell: ip netns exec {{ tenantNS }} ip link set dev {{ vethPair2 }} up
-
-    - name: Run dhclient in the namespace for this interface
-      shell: ip netns exec {{ tenantNS }} dhclient {{ vethPair2 }}
