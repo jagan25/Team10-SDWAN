@@ -1,0 +1,1 @@
+{"sourceRouter": "controller1", "networkIP": "42.0.0.1", "dhcpEndIP": "42.0.0.250", "dhcpStartIP": "42.0.0.2", "bridgeName": "bridge14", "networkName": "network14", "destinationRouter": "t1vm2"}

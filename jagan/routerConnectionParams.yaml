@@ -1,0 +1,9 @@
+---
+routers:
+  - sourceRouter: r1 #should be vm name
+    destinationRouter: r2 #should be vm name
+    networkName: network12
+    bridgeName: bridge12
+    networkIP: 22.0.0.0/24
+    dhcpStartIP: 22.0.0.2
+    dhcpEndIP: 22.0.0.250

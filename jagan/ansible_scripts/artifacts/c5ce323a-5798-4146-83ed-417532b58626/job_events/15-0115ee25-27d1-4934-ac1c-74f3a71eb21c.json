@@ -1,0 +1,1 @@
+{"uuid": "0115ee25-27d1-4934-ac1c-74f3a71eb21c", "stdout": "\u001b[0;35mby setting deprecation_warnings=False in ansible.cfg.\u001b[0m", "counter": 15, "end_line": 25, "runner_ident": "c5ce323a-5798-4146-83ed-417532b58626", "start_line": 24, "event": "verbose"}

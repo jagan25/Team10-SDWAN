@@ -1,0 +1,35 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [debug] *******************************************************************
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.2", [0m
+[0;32m        "networkIP": "22.0.0.1", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+
+TASK [Define Virtual Network] **************************************************
+[0;33mchanged: [127.0.0.1] => (item={u'sourceRouter': u'r1', u'networkIP': u'22.0.0.1', u'dhcpEndIP': u'22.0.0.250', u'dhcpStartIP': u'22.0.0.2', u'bridgeName': u'bridge12', u'networkName': u'network12', u'destinationRouter': u'r2'})[0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+
+TASK [Create Virtual Network if not created] ***********************************
+[0;32mok: [127.0.0.1][0m
+
+TASK [Get Mac for R1 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Get Mac for R2 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R1] ****************************************************
+[0;31mfatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": ["virsh", "attach-interface", "–domain", "routerConnectionParams.sourceRouter", "–type", "network", "–source", "routers.networkName", "–model", "virtio", "–mac", "{stderr_lines:", "[],", "stdout:", "u01:e7:78:5c:b0:79\\n,", "changed:", "True,", "failed:", "False,", "stderr:", "u,", "rc:", "0,", "stdout_lines:", "[u01:e7:78:5c:b0:79]}", "–config", "–live"], "delta": "0:00:00.026396", "end": "2019-11-10 23:48:54.893307", "msg": "non-zero return code", "rc": 1, "start": "2019-11-10 23:48:54.866911", "stderr": "error: unexpected data '{stderr_lines:'", "stderr_lines": ["error: unexpected data '{stderr_lines:'"], "stdout": "", "stdout_lines": []}[0m
+
+PLAY RECAP *********************************************************************
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=3   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    ignored=0   
+

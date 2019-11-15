@@ -1,0 +1,1 @@
+{"uuid": "7e03a4a6-f966-4832-b874-875db94f6eaf", "stdout": "\u001b[0;35mfeature will be removed in version 2.12. Deprecation warnings can be disabled \u001b[0m", "counter": 13, "end_line": 23, "runner_ident": "4445b47f-4092-4bc7-945c-ec0bc663877e", "start_line": 22, "event": "verbose"}

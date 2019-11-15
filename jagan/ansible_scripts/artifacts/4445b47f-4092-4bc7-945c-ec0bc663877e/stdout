@@ -1,0 +1,59 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [debug] *******************************************************************
+
+TASK [debug] *******************************************************************
+
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.1", [0m
+[0;32m        "networkIP": "22.0.0.0/24", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.1", [0m
+[0;32m        "networkIP": "22.0.0.0/24", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+
+TASK [Define Virtual Network] **************************************************
+
+TASK [Define Virtual Network] **************************************************
+[0;35m[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host 127.0.0.1 should use [0m
+[0;35m/usr/bin/python3, but is using /usr/bin/python for backward compatibility with [0m
+[0;35mprior Ansible releases. A future Ansible release will default to using the [0m
+[0;35mdiscovered platform python for this host. See https://docs.ansible.com/ansible/[0m
+[0;35m2.9/reference_appendices/interpreter_discovery.html for more information. This [0m
+[0;35mfeature will be removed in version 2.12. Deprecation warnings can be disabled [0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+[0;31mfailed: [127.0.0.1] (item={u'sourceRouter': u'r1', u'networkIP': u'22.0.0.0/24', u'dhcpEndIP': u'22.0.0.250', u'dhcpStartIP': u'22.0.0.1', u'bridgeName': u'bridge12', u'networkName': u'network12', u'destinationRouter': u'r2'}) => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "ansible_loop_var": "item", "changed": false, "item": {"bridgeName": "bridge12", "destinationRouter": "r2", "dhcpEndIP": "22.0.0.250", "dhcpStartIP": "22.0.0.1", "networkIP": "22.0.0.0/24", "networkName": "network12", "sourceRouter": "r1"}, "msg": "XML error: Invalid address '22.0.0.0/24' in network 'network12'"}[0m
+[0;36m...ignoring[0m
+
+TASK [Create Virtual Network if not created] ***********************************
+[0;31mfatal: [127.0.0.1]: FAILED! => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "msg": "network network12 not found"}[0m
+[0;36m...ignoring[0m
+
+TASK [Get Mac for R1 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Get Mac for R2 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R1] ****************************************************
+[0;31mfatal: [127.0.0.1]: FAILED! => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": true, "cmd": ["virsh", "attach-interface", "–domain", "routerConnectionParams.sourceRouter", "–type", "network", "–source", "routers.networkName", "–model", "virtio", "–mac", "{stderr_lines:", "[],", "stdout:", "u53:5f:84:68:69:f0\\n,", "changed:", "True,", "failed:", "False,", "stderr:", "u,", "rc:", "0,", "stdout_lines:", "[u53:5f:84:68:69:f0]}", "–config", "–live"], "delta": "0:00:00.033787", "end": "2019-11-10 23:35:58.371011", "msg": "non-zero return code", "rc": 1, "start": "2019-11-10 23:35:58.337224", "stderr": "error: unexpected data '{stderr_lines:'", "stderr_lines": ["error: unexpected data '{stderr_lines:'"], "stdout": "", "stdout_lines": []}[0m
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=2   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    [1;35mignored=2   [0m
+
+PLAY RECAP *********************************************************************
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=2   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    [1;35mignored=2   [0m
+

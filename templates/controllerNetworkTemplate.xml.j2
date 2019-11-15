@@ -6,12 +6,12 @@ or other application using the libvirt API.
 -->
 
 <network>
-  <name>{{ contNetwork  }}</name>
+  <name>{{ tenantInfo.tenantID  }}_controller_net</name>
   <forward mode='route'/>
-  <bridge name='{{ contNetwork }}-br' stp='on' delay='0'/>
-  <ip address='{{ ipNet  }}' netmask='255.255.255.0'>
+  <bridge name='{{ tenantInfo.tenantID }}-controllerbr' stp='on' delay='0'/>
+  <ip address='{{ tenantInfo.tenantID  }}.0.0.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='{{ ipStart  }}' end='{{ ipEnd  }}'/>
+      <range start='{{ tenantInfo.tenantID  }}.0.0.2' end='{{ tenantInfo.tenantID  }}.0.0.254'/>
     </dhcp>
   </ip>
 

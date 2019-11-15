@@ -1,0 +1,38 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [debug] *******************************************************************
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "t1vm2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.2", [0m
+[0;32m        "networkIP": "22.0.0.1", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "controller1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+
+TASK [Define Virtual Network] **************************************************
+[0;32mok: [127.0.0.1] => (item={u'sourceRouter': u'controller1', u'networkIP': u'22.0.0.1', u'dhcpEndIP': u'22.0.0.250', u'dhcpStartIP': u'22.0.0.2', u'bridgeName': u'bridge12', u'networkName': u'network12', u'destinationRouter': u't1vm2'})[0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+
+TASK [Create Virtual Network if not created] ***********************************
+[0;32mok: [127.0.0.1][0m
+
+TASK [Get Mac for R1 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Get Mac for R2 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R1] ****************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R2] ****************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+PLAY RECAP *********************************************************************
+[0;33m127.0.0.1[0m                  : [0;32mok=7   [0m [0;33mchanged=4   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

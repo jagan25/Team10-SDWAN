@@ -1,0 +1,56 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [debug] *******************************************************************
+
+TASK [debug] *******************************************************************
+
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.2", [0m
+[0;32m        "networkIP": "22.0.0.1", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.2", [0m
+[0;32m        "networkIP": "22.0.0.1", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+
+TASK [Define Virtual Network] **************************************************
+[0;32mok: [127.0.0.1] => (item={u'sourceRouter': u'r1', u'networkIP': u'22.0.0.1', u'dhcpEndIP': u'22.0.0.250', u'dhcpStartIP': u'22.0.0.2', u'bridgeName': u'bridge12', u'networkName': u'network12', u'destinationRouter': u'r2'})[0m
+[0;35m[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host 127.0.0.1 should use [0m
+[0;35m/usr/bin/python3, but is using /usr/bin/python for backward compatibility with [0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+
+TASK [Create Virtual Network if not created] ***********************************
+
+TASK [Create Virtual Network if not created] ***********************************
+[0;32mok: [127.0.0.1][0m
+
+TASK [Get Mac for R1 interface] ************************************************
+
+TASK [Get Mac for R1 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Get Mac for R2 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R1] ****************************************************
+[0;31mfatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": ["virsh", "attach-interface", "–domain", "r1", "–type", "network", "–source", "network12", "–model", "virtio", "–mac", "38:3f:71:d7:f9:68", "–config", "–live"], "delta": "0:00:00.041927", "end": "2019-11-10 23:58:42.074615", "msg": "non-zero return code", "rc": 1, "start": "2019-11-10 23:58:42.032688", "stderr": "error: unexpected data '38:3f:71:d7:f9:68'", "stderr_lines": ["error: unexpected data '38:3f:71:d7:f9:68'"], "stdout": "", "stdout_lines": []}[0m
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=2   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    ignored=0   
+
+
+PLAY RECAP *********************************************************************
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=2   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    ignored=0   
+

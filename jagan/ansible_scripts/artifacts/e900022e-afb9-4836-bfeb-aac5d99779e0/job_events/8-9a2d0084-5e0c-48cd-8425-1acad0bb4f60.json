@@ -1,0 +1,1 @@
+{"uuid": "9a2d0084-5e0c-48cd-8425-1acad0bb4f60", "stdout": "\u001b[0;35m[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host 127.0.0.1 should use \u001b[0m", "counter": 8, "end_line": 18, "runner_ident": "e900022e-afb9-4836-bfeb-aac5d99779e0", "start_line": 17, "event": "verbose"}

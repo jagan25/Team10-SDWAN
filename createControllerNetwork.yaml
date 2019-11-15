@@ -25,3 +25,21 @@
 
     - name: Bring up the VXLAN interface
       shell: ip link set {{ contNetwork }}-vx-{{ vxlanID }} up
+
+    - name: Create veth pair
+      shell: ip link add {{ vethPair1 }} type veth peer name {{ vethPair2 }}
+
+    - name: Add one veth to controller switch
+      shell: brctl addif {{ contNetwork }}-br {{ vethPair1}}
+
+    - name: Add another veth to the namespace
+      shell: ip link set dev {{ vethPair2 }} netns {{ tenantNS }}
+
+    - name: Bring up the veth interface @switch
+      shell: ip link set dev {{ vethPair1 }} up
+
+    - name: Bring up the veth interface @ns
+      shell: ip netns exec {{ tenantNS }} ip link set dev {{ vethPair2 }} up
+
+    - name: Run dhclient in the namespace for this interface
+      shell: ip netns exec {{ tenantNS }} dhclient {{ vethPair2 }}

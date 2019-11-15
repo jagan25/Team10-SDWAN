@@ -1,0 +1,1 @@
+{"uuid": "e1e2f61a-a66f-4dcf-9f4d-66a230d2a1d4", "stdout": "\u001b[0;35m/usr/bin/python3, but is using /usr/bin/python for backward compatibility with \u001b[0m", "counter": 10, "end_line": 20, "runner_ident": "53a9b085-c9f2-4309-9f7f-14bd891f802b", "start_line": 19, "event": "verbose"}

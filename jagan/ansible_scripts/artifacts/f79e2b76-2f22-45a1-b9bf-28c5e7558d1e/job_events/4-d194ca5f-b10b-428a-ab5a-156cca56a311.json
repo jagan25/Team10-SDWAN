@@ -1,0 +1,1 @@
+{"uuid": "d194ca5f-b10b-428a-ab5a-156cca56a311", "stdout": "\u001b[0;31mThe error appears to be in '/home/ece792/Team10-SDWAN/jagan/ansible_scripts/routerConnectionCreation.yaml': line 46, column 49, but may\u001b[0m", "counter": 4, "end_line": 4, "runner_ident": "f79e2b76-2f22-45a1-b9bf-28c5e7558d1e", "start_line": 3, "event": "verbose"}

@@ -1,0 +1,49 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [debug] *******************************************************************
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "bridgeName": "bridge12", [0m
+[0;32m        "destinationRouter": "r2", [0m
+[0;32m        "dhcpEndIP": "22.0.0.250", [0m
+[0;32m        "dhcpStartIP": "22.0.0.2", [0m
+[0;32m        "networkIP": "22.0.0.0/24", [0m
+[0;32m        "networkName": "network12", [0m
+[0;32m        "sourceRouter": "r1"[0m
+[0;32m    }[0m
+[0;32m}[0m
+
+TASK [Define Virtual Network] **************************************************
+[1;35m[WARNING]: Unable to find 'templates/networkCreation.xml.j2' in expected paths[0m
+[1;35m(use -vvvvv to see paths)[0m
+[1;35m[0m
+[1;35m[WARNING]: Unable to find 'templates/networkCreation.xml.j2' in expected paths[0m
+[1;35m(use -vvvvv to see paths)[0m
+[1;35m[0m
+[0;31mfatal: [127.0.0.1]: FAILED! => {"msg": "An unhandled exception occurred while running the lookup plugin 'template'. Error was a <class 'ansible.errors.AnsibleError'>, original message: the template file templates/networkCreation.xml.j2 could not be found for the lookup"}[0m
+[0;36m...ignoring[0m
+
+TASK [Create Virtual Network if not created] ***********************************
+[0;31mfatal: [127.0.0.1]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'item' is undefined\n\nThe error appears to be in '/home/ece792/Team10-SDWAN/jagan/ansible_scripts/routerConnectionCreation.yaml': line 25, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n    # Create and start a network\n    - name: Create Virtual Network if not created\n      ^ here\n"}[0m
+[0;36m...ignoring[0m
+
+TASK [Get Mac for R1 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Get Mac for R2 interface] ************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Attach network to R1] ****************************************************
+[0;35m[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host 127.0.0.1 should use [0m
+[0;35m/usr/bin/python3, but is using /usr/bin/python for backward compatibility with [0m
+[0;35mprior Ansible releases. A future Ansible release will default to using the [0m
+[0;35mdiscovered platform python for this host. See https://docs.ansible.com/ansible/[0m
+[0;35m2.9/reference_appendices/interpreter_discovery.html for more information. This [0m
+[0;35mfeature will be removed in version 2.12. Deprecation warnings can be disabled [0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+[0;31mfatal: [127.0.0.1]: FAILED! => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": true, "cmd": ["virsh", "attach-interface", "–domain", "item.sourceRouter", "–type", "network", "–source", "item.networkName", "–model", "virtio", "–mac", "{stderr_lines:", "[],", "stdout:", "u43:de:e6:ba:03:12\\n,", "changed:", "True,", "failed:", "False,", "stderr:", "u,", "rc:", "0,", "stdout_lines:", "[u43:de:e6:ba:03:12]}", "–config", "–live"], "delta": "0:00:00.030783", "end": "2019-11-10 21:58:20.270074", "msg": "non-zero return code", "rc": 1, "start": "2019-11-10 21:58:20.239291", "stderr": "error: unexpected data '{stderr_lines:'", "stderr_lines": ["error: unexpected data '{stderr_lines:'"], "stdout": "", "stdout_lines": []}[0m
+
+PLAY RECAP *********************************************************************
+[0;31m127.0.0.1[0m                  : [0;32mok=5   [0m [0;33mchanged=2   [0m unreachable=0    [0;31mfailed=1   [0m skipped=0    rescued=0    [1;35mignored=2   [0m
+

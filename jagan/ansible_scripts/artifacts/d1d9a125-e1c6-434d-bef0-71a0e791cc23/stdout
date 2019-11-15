@@ -1,0 +1,34 @@
+
+PLAY [localhost] ***************************************************************
+
+TASK [execute install script] **************************************************
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [Create Linux Bridge] *****************************************************
+[0;35m[DEPRECATION WARNING]: Distribution Ubuntu 18.04 on host 127.0.0.1 should use [0m
+[0;35m/usr/bin/python3, but is using /usr/bin/python for backward compatibility with [0m
+[0;35mprior Ansible releases. A future Ansible release will default to using the [0m
+[0;35mdiscovered platform python for this host. See https://docs.ansible.com/ansible/[0m
+[0;35m2.9/reference_appendices/interpreter_discovery.html for more information. This [0m
+[0;35mfeature will be removed in version 2.12. Deprecation warnings can be disabled [0m
+[0;35mby setting deprecation_warnings=False in ansible.cfg.[0m
+[0;33mchanged: [127.0.0.1][0m
+
+TASK [debug] *******************************************************************
+[0;32mok: [127.0.0.1] => {[0m
+[0;32m    "msg": {[0m
+[0;32m        "changed": true, [0m
+[0;32m        "failed": false, [0m
+[0;32m        "rc": 0, [0m
+[0;32m        "stderr": "", [0m
+[0;32m        "stderr_lines": [], [0m
+[0;32m        "stdout": "e8:85:48:dc:ad:fe\n", [0m
+[0;32m        "stdout_lines": [[0m
+[0;32m            "e8:85:48:dc:ad:fe"[0m
+[0;32m        ][0m
+[0;32m    }[0m
+[0;32m}[0m
+
+PLAY RECAP *********************************************************************
+[0;33m127.0.0.1[0m                  : [0;32mok=3   [0m [0;33mchanged=2   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
