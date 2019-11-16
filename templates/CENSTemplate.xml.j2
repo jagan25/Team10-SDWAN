@@ -8,5 +8,5 @@ or other application using the libvirt API.
 <network>
   <name>{{ site.siteNS  }}{{ item.vmName }}_CENSnet</name>
   <forward mode='bridge'/>
-  <bridge name='s{{ site.siteID }}v{{ item.vmID }}br'/>
+  <bridge name='t{{ site.tenantID }}s{{ site.siteID }}v{{ item.vmID }}br'/>
 </network>

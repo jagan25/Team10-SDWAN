@@ -6,8 +6,7 @@ or other application using the libvirt API.
 -->
 
 <network>
-  <name>{{ netName }}</name>
+  <name>2CE1PE1Net</name>
   <forward mode='bridge'/>
-  <bridge name='{{ bridgeName }}'/>
+  <bridge name='2CE1PE1br'/>
 </network>
-

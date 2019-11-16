@@ -1,0 +1,16 @@
+-
+  gather_facts: false
+  hosts: localhost
+  tasks:
+    -
+      name: "Define network"
+      virt_net:
+        command: define
+        name: "{{ network }}"
+        xml: "{{ lookup(\"template\", \"templates/{{ network }}.xml\"  ) }}"
+      ignore_errors: true
+    -
+      name: "Start the network"
+      shell: "sudo virsh net-start {{ network }}"
+      ignore_errors: true
+
