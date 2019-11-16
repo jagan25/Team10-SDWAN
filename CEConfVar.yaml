@@ -1,0 +1,12 @@
+---
+site:
+  siteID: 1
+  tenantID: 50
+  siteNS: t50_ns1
+  vms:
+    -
+      mem: 512
+      vcpu: 2
+      vmName: CE1
+      vmID: 1
+

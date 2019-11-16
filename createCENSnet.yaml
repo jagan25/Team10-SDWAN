@@ -1,0 +1,56 @@
+---
+-
+  gather_facts: false
+  hosts: localhost
+  tasks:
+    -
+      name: "Create l2 bridge site side"
+      shell: "sudo brctl addbr s{{ site.siteID }}v{{ item.vmID }}br"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "Up the bridge site side"
+      shell: "sudo ifconfig s{{ site.siteID }}v{{ item.vmID }}br up"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+
+    -
+      name: "Define network site side"
+      virt_net:
+        command: define
+        name: "{{ site.siteNS }}{{ item.vmName }}_CENSnet"
+        xml: "{{ lookup(\"template\", \"templates/CENSTemplate.xml.j2\"  ) }}"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "Start the network site side"
+      virt_net:
+        command: create
+        name: "{{ site.siteNS }}{{ item.vmName }}_CENSnet"
+        state: active
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "create veth pair"
+      shell: "sudo ip link add eth_s{{ site.siteID }}{{ item.vmName }} type veth peer name eth_{{ item.vmName }}s{{ site.siteID }}"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "add veth pair to siteNS"
+      shell: "sudo ip link set dev eth_s{{ site.siteID }}{{ item.vmName }} netns {{ site.siteNS }}"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "add veth pair to Bridge"
+      shell: "sudo brctl addif s{{ site.siteID }}v{{ item.vmID }}br  eth_{{ item.vmName }}s{{ site.siteID }}"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+    -
+      name: "Attach CE VM to the CENS bridge"
+      shell: "sudo virsh attach-interface --domain {{ site.siteNS }}{{ item.vmName }} --type network {{ site.siteNS }}{{ item.vmName }}_CENSnet --model virtio --config --live"
+      with_items: "{{ site.vms }}"
+      ignore_errors: true
+
+  vars_files:
+    - CEConfVar.yaml
+

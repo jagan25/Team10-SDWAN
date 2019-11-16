@@ -6,7 +6,7 @@ or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>{{ tenantInfo.tenantName  }}{{ item.vmName }}</name>
+  <name>{{ site.siteNS }}{{ item.vmName }}</name>
   <memory unit='MB'>{{ item.mem }}</memory>
   <currentMemory unit='MB'>{{ item.mem }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>
@@ -37,7 +37,7 @@ or other application using the libvirt API.
     <emulator>/usr/bin/kvm-spice</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/var/lib/libvirt/images/{{ item.vmName }}.img'/>
+      <source file='/var/lib/libvirt/images/{{ site.siteNS }}{{ item.vmName }}.img'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
     </disk>
@@ -70,12 +70,7 @@ or other application using the libvirt API.
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
     </controller>
     <interface type='network'>
-      <source network='default'/>
-      <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
-    </interface>
-    <interface type='network'>
-      <source network='{{ tenantInfo.tenantName }}_controller_net'/>
+      <source network='{{ site.tenantID }}_controller_net'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
     </interface>
