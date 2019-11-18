@@ -1,0 +1,66 @@
+---
+- vars_files:
+    - '{{ file }}'
+  hosts: localhost
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - debug:
+         msg: "{{PE_net}}"
+
+    # Define a new network
+    - name: Define Virtual Network
+      virt_net:
+        command: define
+        name: "{{PE_net.tenant_name}}_PEnet"
+        xml: "{{ lookup('template', 'templates/bridge_template.xml.j2' ) }}"
+      ignore_errors: true
+
+    # Create and start a network
+    - name: Create Virtual Network if not created
+      virt_net:
+        command: create
+        name: "{{PE_net.tenant_name}}_PEnet"
+      ignore_errors: true
+
+    # Create bridge connected to the network
+    - name: Create bridge connected to the network
+      command: "sudo brctl addbr {{PE_net.tenant_name}}_PEnet"
+
+    # Set the bridge up
+    - name: Set the bridge up
+      command: "sudo ip link set dev {{PE_net.tenant_name}}_PEnet up"
+
+    # Create veth pair
+    - name: Create veth pair
+      command: "ip link add {{PE_net.tenant_name}}PEveth type veth peer name {{PE_net.tenant_name}}transitveth"
+      ignore_errors: true
+
+    # Add vethpair interface to namespace
+    - name: Add vethpair interface to namespace
+      command: "ip link set {{PE_net.tenant_name}}transitveth netns {{PE_net.tenant_name}}_transit"
+      ignore_errors: true
+
+    # Attach another veth pair interface with bridge
+    - name: Attach another vethpair interface to bridge
+      command: "brctl addif {{PE_net.tenant_name}}_PEnet {{PE_net.tenant_name}}PEveth"
+      ignore_errors: true
+
+    # Assign ip to vethpair interface inside namespace
+    - name: Assign ip to vethpair interface inside namespace
+      command: "ip netns exec {{PE_net.tenant_name}}_transit ifconfig {{PE_net.tenant_name}}transitveth {{PE_net.tenant_id}}.0.1.1/24 up"
+      ignore_errors: true
+
+    # Set the bridge veth interface up
+    - name: set the bridge veth interface up
+      command: "sudo ip link set dev {{PE_net.tenant_name}}PEveth up"
+      ignore_errors: true
+
+    - name: Set the transit veth interface up
+      shell: "sudo ip netns exec {{PE_net.tenant_name}}_transit ip link set dev {{PE_net.tenant_name}}transitveth up"
+      ignore_errors: true
+
+    - name: Assign IP to the interface in the PE and set the link up
+      shell: "sudo ip netns exec {{PE_net.tenant_name}}_transit dnsmasq --interface={{PE_net.tenant_name}}transitveth --dhcp-range={{PE_net.IPrange}},12h --bind-interfaces --except-interface=lo"
+      ignore_errors: true

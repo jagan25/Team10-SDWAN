@@ -1,7 +1,7 @@
 --- 
 tenantInfo: 
   cloud: "pri"
-  createControllerNet: "Y"
+  controllerNet: "Y"
   remoteIP: "192.168.124.107"
   tenantID: 50
   tenantName: t50

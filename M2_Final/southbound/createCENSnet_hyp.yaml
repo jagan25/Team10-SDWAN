@@ -1,7 +1,7 @@
 ---
 -
   gather_facts: false
-  hosts: localhost
+  hosts: hypervisor
   tasks:
     -
       name: "Create l2 bridge site side"
@@ -67,5 +67,5 @@
       ignore_errors: true
 
   vars_files:
-    - CE2ConfVar.yaml
+    - CE3ConfVar.yaml
 
