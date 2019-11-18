@@ -1,0 +1,17 @@
+---
+- name: change default route table
+  hosts: localhost
+  vars_files:
+      - changeTransitVars.yaml
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Remove the old route
+      command: "sudo ip netns exec {{item.value.netnsName}} ip route del {{item.value.source}} via {{item.value.oldInterface}}"
+      with_dict: "{{ transit }}"
+
+    - name: Add the new route
+      command: "sudo ip netns exec {{item.value.netnsName}} ip route add {{item.value.source}} via {{item.value.newInterface}}"
+      with_dict: "{{ transit }}"
+   

@@ -1,0 +1,20 @@
+---
+- name: test ansible
+  vars_files:
+    - hostVars.yaml
+  hosts: "{{host}}"
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Run the log script
+      command: bash cpuUsage.sh 22
+      register: shellOut
+      ignore_errors: yes
+
+    - debug:
+        msg: "{{shellOut.stdout}}"
+
+    - set_fact:
+        cacheable: yes
+        output: "{{shellOut.stdout}}"

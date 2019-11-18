@@ -1,0 +1,16 @@
+---
+- name: Add IP Table Rules
+  vars_files:
+    - hostVars.yaml
+    - ipRouteCommandVars.yaml
+  hosts: "{{host}}"
+  become: yes
+  become_user: root
+  tasks:
+    - debug:
+      msg: "{{IPTableCommands}}"
+
+    - name: Add all IP Table rules
+      command: "{{item}}"
+      with_items: "{{IPTableCommands}}"
+

@@ -1,0 +1,1 @@
+{"uuid": "20ef4d56-7567-4dcd-8107-344cf2b20fc1", "stdout": "\u001b[0;31mThe error appears to be in '/home/ece792/project/ansibleScripts/configurability/addIpTableRules.yaml': line 10, column 7, but may\u001b[0m", "counter": 3, "end_line": 3, "runner_ident": "a08b094f-a92b-49f4-b4f6-1d9c0f20c083", "start_line": 2, "event": "verbose"}
