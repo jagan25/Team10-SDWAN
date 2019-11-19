@@ -4,8 +4,11 @@ import logging
 import subprocess
 
 def createFunc(yFile, yFileName):
-    if "contNetwork" in yFile:
-        subprocess.call(["sudo ansible-playbook createControllerNetwork.yaml -e file=" + yFileName + " -vvv"],shell=True)
+    if yFile['controllerNet'].lower()=="y":
+        if yFile['cloud']=="pri":
+            subprocess.call(["sudo ansible-playbook createControllerNetwork.yaml -e file=" + yFileName + " -vvv"],shell=True)
+        elif yFile['cloud']=="sec":
+            subprocess.call(["sudo ansible-playbook createControllerNetwork_hyp.yaml -e file=" + yFileName + " -vvv"],shell=True)
     if "vms" in yFile:
         subprocess.call(["sudo ansible-playbook createControllerVM.yaml -e file=" + yFileName + " -vvv"],shell=True)
 
@@ -14,13 +17,16 @@ def deleteFunc(yFile):
     if "vms" in yFile:
         for i in range(len(yFile["vms"])):
             print(str(yFile["vms"][i]["vmName"]))
-            subprocess.call(["sudo bash deleteController.sh "+str(yFile["vms"][i]["vmName"])],shell=True)
-    if "contNetwork" in yFile:
-        subprocess.call(["sudo bash deleteControllerNet.sh "+str(yFile["vxlanID"])+" "+str(yFile["contNetwork"])+" "+str(yFile["vethPair1"])],shell=True)
+            subprocess.call(["sudo bash deleteVM.sh "+str(yFile["vms"][i]["vmName"])],shell=True)
+    if yFile['controllerNet'].lower()=="y":
+        subprocess.call(["sudo bash deleteContNet.sh "+str(yFile["tenantID"])],shell=True)
 
 
-def checkYAMLcreate(yFile):
-    if not ("vms" in yFile or "contNetwork" in yFile):
+def checkYAML(yFile):
+    if not "tenantInfo" in yFile:
+        logging.error("\nERROR: Cannot perform create operation!!!")
+        exit(0)
+    if not ("vms" in yFile['tenantInfo'] or "controllerNet" in yFile['tenantInfo']):
         logging.error("\nERROR: Cannot perform create operation!!!")
         exit(0)
 
@@ -35,14 +41,14 @@ else:
             #open the yaml file
             with open(yFileName,'r') as file:
                 yFile = yaml.load(file)
-
+            checkYAML(yFile)
             # check for the 1st argument i.e., create or delete
             if str(sys.argv[1]).lower()=="delete":
                 print("\nPerforming delete operation depending upon the file")
-                deleteFunc(yFile)
+                deleteFunc(yFile["tenantInfo"])
             elif str(sys.argv[1]).lower()=="create":
                 logging.info("\nPerforming create operation depending upon the file")
-                createFunc(yFile,yFileName)
+                createFunc(yFile["tenantInfo"],yFileName)
             else:
                 logging.error("\nERROR: Unrecognized Command!!!")
                 exit(0)

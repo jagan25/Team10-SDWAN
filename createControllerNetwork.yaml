@@ -2,7 +2,9 @@
 - 
   gather_facts: false
   hosts: localhost
-  tasks: 
+  tasks:
+    - debug:
+        msg: "{{ file }}"
     - 
       name: "Define the controller network"
       virt_net: 
@@ -17,7 +19,7 @@
         state: active
     - 
       name: "Create the VXLAN interface"
-      shell: "ip link add name {{ tenantInfo.tenantID }}-vxlan type vxlan id {{ tenantInfo.tenantID }} dev {{ tenantInfo.tenantID }}-controllerbr remote {{ tenantInfo.remoteIP }} dstport 4789"
+      shell: "ip link add name {{ tenantInfo.tenantID }}-vxlan type vxlan id {{ tenantInfo.tenantID }} dev ens5 remote {{ tenantInfo.remoteIP }} dstport 4789"
     - 
       name: "Bring up the VXLAN interface"
       shell: "ip link set {{ tenantInfo.tenantID }}-vxlan up"

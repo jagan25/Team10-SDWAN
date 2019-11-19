@@ -6,7 +6,7 @@ or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>{{ tenantInfo.tenantName  }}{{ item.vmName }}</name>
+  <name>{{ item.vmName }}</name>
   <memory unit='MB'>{{ item.mem }}</memory>
   <currentMemory unit='MB'>{{ item.mem }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>

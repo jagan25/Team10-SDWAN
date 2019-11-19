@@ -5,11 +5,11 @@ import subprocess
 
 def createTransit(yFileName):
     #print('sudo ansible-playbook create transit.yaml -e file='+ yFileName +' -vvv')
-    subprocess.call(['sudo ansible-playbook create)transit.yaml -e file='+ yFileName +' -vvv'], shell=True)
+    subprocess.call(['sudo ansible-playbook create_transit.yaml -e file='+ yFileName +' -vvv'], shell=True)
 
 def deleteTransit(yFile):
     #print('sudo ip netns del '+ str(yFile['tenant']['tenant_name'])+'_transit')
-    subprocess.call(['sudo ip netns del '+ str(yFile['tenant']['tenant_name'])])
+    subprocess.call(['sudo ip netns del '+ str(yFile['tenant']['tenant_name'])+'_transit'], shell=True)
 
 def checkYaml(yFile):
     if 'tenant' in yFile:
