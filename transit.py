@@ -8,8 +8,12 @@ def createTransit(yFileName):
     subprocess.call(['sudo ansible-playbook create_transit.yaml -e file='+ yFileName +' -vvv'], shell=True)
 
 def deleteTransit(yFile):
-    #print('sudo ip netns del '+ str(yFile['tenant']['tenant_name'])+'_transit')
+    print('Deleting transit namespace')
     subprocess.call(['sudo ip netns del '+ str(yFile['tenant']['tenant_name'])+'_transit'], shell=True)
+    print('Deleting the veth pair to hypervisor')
+    subprocess.call(['sudo ip link set dev '+ str(yFile['tenant']['tenant_name'])+'_pub down'], shell=True)
+    subprocess.call(['sudo ip link del '+ str(yFile['tenant']['tenant_name'])+'_pub'], shell=True)
+
 
 def checkYaml(yFile):
     if 'tenant' in yFile:

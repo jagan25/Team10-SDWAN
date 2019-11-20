@@ -5,9 +5,4 @@ tenantInfo:
     remoteIP: "192.168.124.107"
     tenantID: 20
     tenantName: t20
-    vms: 
-    -
-        mem: 1024
-        vcpu: 4
-        vmName: t20_controller1
 
