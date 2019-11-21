@@ -67,5 +67,5 @@
       ignore_errors: true
 
   vars_files:
-    - CE3ConfVar.yaml
+    - '{{ file }}' 
 

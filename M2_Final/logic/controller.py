@@ -19,11 +19,14 @@ def deleteFunc(yFile):
             print(str(yFile["vms"][i]["vmName"]))
             subprocess.call(["sudo bash deleteVM.sh "+str(yFile["vms"][i]["vmName"])],shell=True)
     if yFile['controllerNet'].lower()=="y":
-        subprocess.call(["sudo bash deleteNet.sh "+str(yFile["tenantID"])+"_controller_net " + str(yFile["tenantID"])+"_controllerbr"],shell=True)
+        subprocess.call(["sudo bash deleteContNet.sh "+str(yFile["tenantID"])],shell=True)
 
 
 def checkYAML(yFile):
-    if not ("vms" in yFile or "controllerNet" in yFile):
+    if not "tenantInfo" in yFile:
+        logging.error("\nERROR: Cannot perform create operation!!!")
+        exit(0)
+    if not ("vms" in yFile['tenantInfo'] or "controllerNet" in yFile['tenantInfo']):
         logging.error("\nERROR: Cannot perform create operation!!!")
         exit(0)
 
@@ -42,10 +45,10 @@ else:
             # check for the 1st argument i.e., create or delete
             if str(sys.argv[1]).lower()=="delete":
                 print("\nPerforming delete operation depending upon the file")
-                deleteFunc(yFile)
+                deleteFunc(yFile["tenantInfo"])
             elif str(sys.argv[1]).lower()=="create":
                 logging.info("\nPerforming create operation depending upon the file")
-                createFunc(yFile,yFileName)
+                createFunc(yFile["tenantInfo"],yFileName)
             else:
                 logging.error("\nERROR: Unrecognized Command!!!")
                 exit(0)

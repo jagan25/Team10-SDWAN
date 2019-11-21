@@ -6,7 +6,7 @@ or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>{{ tenantInfo.tenantName  }}{{ item.vmName }}</name>
+  <name>{{ item.vmName }}</name>
   <memory unit='MB'>{{ item.mem }}</memory>
   <currentMemory unit='MB'>{{ item.mem }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>
@@ -75,7 +75,7 @@ or other application using the libvirt API.
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
     <interface type='network'>
-      <source network='{{ tenantInfo.tenantName }}_controller_net'/>
+      <source network='{{ tenantInfo.tenantID }}_controller_net'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
     </interface>

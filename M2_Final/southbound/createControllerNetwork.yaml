@@ -2,7 +2,9 @@
 - 
   gather_facts: false
   hosts: localhost
-  tasks: 
+  tasks:
+    - debug:
+        msg: "{{ file }}"
     - 
       name: "Define the controller network"
       virt_net: 
