@@ -1,0 +1,21 @@
+---
+-
+  gather_facts: false
+  vars_files:
+    - '{{file}}'
+  hosts: "{{tenant.cloudIP}}"
+  tasks:
+    
+    - name: Turn the veth pair down
+      command: "sudo ip link set dev {{tenant.tenant_name}}{{tenant.site}}_ps down"
+      ignore_errors: true
+
+    - name: Delete the veth pair
+      command: "sudo ip link del dev {{tenant.tenant_name}}{{tenant.site}}_ps"
+      ignore_errors: true
+
+    - name: Delete site namespace
+      command: "sudo ip netns del {{tenant.tenant_name}}_{{tenant.site}}"
+      ignore_errors: true
+
+

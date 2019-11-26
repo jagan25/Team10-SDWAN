@@ -1,0 +1,91 @@
+---
+-
+  gather_facts: false
+  vars_files:
+    - '{{file}}'
+  hosts: "{{tenant.cloudIP}}"
+  vars:
+    imageLocation: /var/lib/libvirt/images/skundalVM1.img
+    vmDiskLocation: /var/lib/libvirt/images
+  tasks:
+          # Define a new network
+    - name: Define Virtual Network
+      virt_net:
+        command: define
+        name: "{{item.name}}-net"
+        xml: "{{ lookup('template', 'templates/int_bridge_template.xml.j2' ) }}"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    - name: Create Virtual Network if not created
+      virt_net:
+        command: create
+        name: "{{item.name}}-net"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Create bridge connected to the network
+    - name: Create bridge connected to the network
+      command: "sudo brctl addbr {{item.name}}-br"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Set the bridge up
+    - name: Set the bridge up
+      command: "sudo ip link set dev {{item.name}}-br  up"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Create veth pair
+    - name: Create Veth pair
+      command: "ip link add {{item.name}}-veth1 type veth peer name {{item.name}}-veth2"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Add vethpair interface to namespace
+    - name: Add vethpair interface to namespace
+      command: "ip link set {{item.name}}-veth1 netns {{tenant.tenant_name}}_{{tenant.site}}"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Attach another veth pair interface with bridge
+    - name: Attach another vethpair interface to bridge
+      command: "brctl addif {{item.name}}-br {{item.name}}-veth2"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Assign ip to vethpair interface inside namespace
+    - name: Assign ip to vethpair interface inside namespace
+      command: "ip netns exec {{tenant.tenant_name}}_{{tenant.site}} ifconfig {{item.name}}-veth1 {{item.ip}} up"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    # Set the bridge veth interface up
+    - name: set the bridge veth interface up
+      command: "sudo ip link set dev {{item.name}}-veth2 up"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    - name: Set the namespace veth interface up
+      shell: "sudo ip netns exec {{tenant.tenant_name}}_{{tenant.site}} ip link set dev {{item.name}}-veth1 up"
+      with_items: "{{router}}"
+      ignore_errors: true
+
+    - name: Copy the image of internal router vm
+      copy:
+        dest: "{{ vmDiskLocation }}/{{ item.name }}.img"
+        src: "{{ imageLocation }}"
+      with_items: "{{ router }}"
+
+    - name: Create the vm
+      virt:
+        command: define
+        name: "{{ item.vmName }}"
+        xml: "{{ lookup( \"template\", \"templates/int-router-template.xml.j2\" ) }}"
+      with_items: "{{ router }}"
+    
+    - name: Start the vm
+      virt:
+        name: "{{ item.name }}"
+        state: running
+      with_items: "{{ router }}"
