@@ -1,0 +1,12 @@
+---
+PE:
+  tenant_id: 50
+  tenant_name: t50
+  IPrange: 50.0.1.2,50.0.1.254
+  vms:
+    - cpu: 4
+      mem: 2048
+      PE_name: PE1
+    - cpu: 2
+      mem: 2048
+      PE_name: PE2

@@ -1,0 +1,9 @@
+
+PLAY [Add IP Table Rules] ******************************************************
+
+TASK [Gathering Facts] *********************************************************
+[1;31mfatal: [50.0.0.106]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: ssh: connect to host 50.0.0.106 port 22: Connection timed out", "unreachable": true}[0m
+
+PLAY RECAP *********************************************************************
+[0;31m50.0.0.106[0m                 : ok=0    changed=0    [1;31munreachable=1   [0m failed=0    skipped=0    rescued=0    ignored=0   
+

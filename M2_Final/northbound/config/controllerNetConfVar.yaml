@@ -1,0 +1,13 @@
+--- 
+tenantInfo: 
+  cloud: "pri"
+  controllerNet: "N"
+  remoteIP: "192.168.124.107"
+  tenantID: 50
+  tenantName: t50
+  vms: 
+    - 
+      mem: 8192 
+      vcpu: 4
+      vmName: t50controller1
+

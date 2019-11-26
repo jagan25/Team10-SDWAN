@@ -1,0 +1,6 @@
+--- 
+tenantInfo: 
+  cloud: "sec"
+  remoteIP: "192.168.124.70"
+  tenantID: 50
+  tenantName: t50
