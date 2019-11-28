@@ -4,24 +4,43 @@ import logging
 import subprocess
 import time
 
-def createTransit(yFileName):
-    #print('sudo ansible-playbook create transit.yaml -e file='+ yFileName +' -vvv')
-    subprocess.call(['sudo ansible-playbook create_transit.yaml -e file='+ yFileName +' -vvv'], shell=True)
+CONFIG_FOLDER_PATH = '/etc/config/'
+ANSIBLE_FOLDER_PATH = '/var/scripts/'
+CREATE_NS_SCRIPT = ANSIBLE_FOLDER_PATH+"create_ns.yaml"
+DELETE_NS_SCRIPT = ANSIBLE_FOLDER_PATH+"delete_ns.yaml"
 
-def deleteTransit(yFile, logFile):
-    print('Deleting transit namespace')
-    subprocess.call(['sudo ip netns del '+ str(yFile['tenant']['tenant_name'])+'_transit'], shell=True)
-    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Transit namespace :"+ str(yFile['tenant']['tenant_name'])+'_transit'+"\n")
-    print('Deleting the veth pair to hypervisor')
-    subprocess.call(['sudo ip link set dev '+ str(yFile['tenant']['tenant_name'])+'_pub down'], shell=True)
-    subprocess.call(['sudo ip link del '+ str(yFile['tenant']['tenant_name'])+'_pub'], shell=True)
-    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Veth Pair to hypervisor VPC (Down) :"+ str(yFile['tenant']['tenant_name']) +"\n")
-    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Veth Pair :"+ str(yFile['tenant']['tenant_name'])+'_pub'+"\n")
+def read_yaml_data(f_name):
+  data = None
+  with open(f_name) as stream:
+    data = yaml.safe_load(stream)
+  return data
 
+def write_yaml_data(data, f_name):
+  with open(f_name, 'w') as outfile:
+    yaml.dump(data, outfile)
+
+def createTransit(config, logFile):
+    print('Creating transit VPC')
+    hypervisorIP = createIP(str(config['tenant']['tenant_id']), "1")
+    transitIP = createIP(str(config['tenant']['tenant_id']), "2")
+    transitNS = str(config['tenant']['tenant_name'])+'_transit'
+    command = "sudo ansible-playbook " + CREATE_NS_SCRIPT + " -e ns_name="+transitNS+" -e hypervisorIP="+hypervisorIP+" -e transitIP="+transitIP+" -e hypervisor="+config['tenant']['hypervisorType']
+    subprocess.call([command], shell=True)
+    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Transit VPC : " + command + "\n")
+
+def deleteTransit(config, logFile):
+    print('Deleting transit VPC')
+    transitNS = str(config['tenant']['tenant_name'])+'_transit'
+    command = "sudo ansible-playbook " + DELETE_NS_SCRIPT + " -e ns_name="+transitNS+" -e hypervisor="+config['tenant']['hypervisorType']
+    subprocess.call([command], shell=True)
+    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Transit VPC : " + command + "\n")
+
+def createIP(prefix, suffix):
+    return (3*(prefix+'.'))+suffix
 
 def checkYaml(yFile):
     if 'tenant' in yFile:
-        if 'tenant_id' in yFile['tenant'] and 'tenant_name' in yFile['tenant']:
+        if 'tenant_id' in yFile['tenant'] and 'tenant_name' in yFile['tenant'] and 'hypervisorType' in yFile['tenant']:
             return 0
     return 1
 
@@ -40,8 +59,7 @@ def main():
         if yFileName.endswith(".yml") or yFileName.endswith(".yaml"):
             try:
                 # open the yaml file
-                with open(yFileName, 'r') as file:
-                    yFile = yaml.load(file)
+                yFile = read_yaml_data(yFile)
                 flag = checkYaml(yFile)
                 if flag == 1:
                     logging.error("Incompatible YAML file")
@@ -54,8 +72,7 @@ def main():
 
                 elif str(sys.argv[1]).lower() == "create":
                     print("Performing create operation depending upon the file")
-                    createTransit(yFileName)
-                    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Create Transit VPC :"+ str(yFile['tenant']['tenant_name'])+'_transit']+"\n")
+                    createTransit(yFile, logFile)
                 else:
                     logging.error("ERROR: Unrecognized Command!!!")
                     exit(0)

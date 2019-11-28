@@ -4,29 +4,87 @@ import logging
 import subprocess
 import time
 
-def createFunc(yFile, yFileName, logFile):
-    if yFile['controllerNet'].lower()=="y":
-        if yFile['cloud']=="pri":
-            subprocess.call(["sudo ansible-playbook createControllerNetwork.yaml -e file=" + yFileName + " -vvv"],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Primary Controller  "+"\n")
+CONFIG_FOLDER_PATH = '/etc/config/'
+ANSIBLE_FOLDER_PATH = '/var/scripts/'
+CREATE_NETWORK_SCRIPT = ANSIBLE_FOLDER_PATH+"create_l3net.yaml"
+CREATE_BRNS_CONN_SCRIPT = ANSIBLE_FOLDER_PATH+"create_brns_conn.yaml"
+CREATE_VM_SCRIPT = ANSIBLE_FOLDER_PATH+"create_vm.yaml"
+DELETE_NETWORK_SCRIPT = ANSIBLE_FOLDER_PATH+"delete_l3net.yaml"
+DELETE_BRNS_CONN_SCRIPT = ANSIBLE_FOLDER_PATH+"delete_brns_conn.yaml"
+DELETE_VM_SCRIPT = ANSIBLE_FOLDER_PATH+"delete_vm.yaml"
 
-        elif yFile['cloud']=="sec":
-            subprocess.call(["sudo ansible-playbook createControllerNetwork_hyp.yaml -e file=" + yFileName + " -vvv"],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Secondary Controller  "+"\n")
+def read_yaml_data(f_name):
+  data = None
+  with open(f_name) as stream:
+    data = yaml.safe_load(stream)
+  return data
+
+def write_yaml_data(data, f_name):
+  with open(f_name, 'w') as outfile:
+    yaml.dump(data, outfile)
+
+def createFunc(yFile, logFile):
+    if yFile['controllerNet'].lower()=="y":
+
+        #vm = hypervisor, template, vm_name - create_vm.yaml, controllerTemplate.xml.j2, mem, vcpu, net
+        #start_ip, bridge_name, start_ip, end_ip, network_name
+        #bridge = hyp, bridge_name,  namespace(tenantNAme_transit), veth1, veth2
+
+        print("Creating  ControllerNet ")
+
+        # variables
+        networkName = str(yFile["tenantID"])+"controller_net"
+        bridgeName = str(yFile["tenantID"])+"controller_br"
+        br_ip = str(yFile['tenantID'])+'.0.0.1'
+        start_ip = str(yFile['tenantID'])+'.0.0.2'
+        end_ip = str(yFile['tenantID'])+'.0.0.254'
+
+        # create controller network
+        command = "sudo ansible-playbook " + CREATE_NETWORK_SCRIPT + " -e hypervisor=" + yFile['hypervisorType'] + " -e br_ip=" +br_ip+" -e start_ip="+start_ip+" -e end_ip="+end_ip+" -e network_name="+networkName+" -e bridge_name="+bridgeName
+        subprocess.call([command],shell=True)
+        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating  Controller  : " + command + "\n")
+
+        print("Creating Bridge to namespace connection ")
+
+        # create controller to transit ns connection
+        comand = "sudo ansible-playbook " + CREATE_BRNS_CONN_SCRIPT + " -e hypervisor=" + yFile['hypervisorType'] + " -e veth1=" +str(yFile["tenantID"])+"_1"+" -e veth2="+str(yFile["tenantID"])+"_2"+" -e namespace="+str(yFile['tenantName'])+"_transit"+" -e bridge_name="+bridgeName
+        subprocess.call([command],shell=True)
+        subprocess.call(["sudo ip netns exec "+str(yFile['tenantName'])+"_transit dhclient "+str(yFile["tenantID"])+"_2"], shell=True)
+        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating  Bridge to namespace connection  : " + command + "\n")
+
     if "vms" in yFile:
-        subprocess.call(["sudo ansible-playbook createControllerVM.yaml -e file=" + yFileName + " -vvv"],shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Controller VM  "+"\n")
+        for vm in yFile["vms"]:
+            print("Creating  VM : "+str(vm['vmName']))
+
+            # create controller vm
+            command = "sudo ansible-playbook " + CREATE_VM_SCRIPT + " -e hypervisor=" + yFile['hypervisorType'] +" -e vm_name="+str(vm['vmName']) +" -e mem="+str(vm['mem'])+" -e vcpu="+str(vm['vcpu']) +" -e network="+networkName
+            subprocess.call([command],shell=True)
+            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Controller VM : " + command  + "\n")
 
 def deleteFunc(yFile, logFile):
-    print("executing delete")
+    #for net  - hypervisor, net_name, bridge_name
+    #for vm - hypervsr, vm_name
+    #for bridge - hyp, veth1
+    networkName = str(yFile["tenantID"])+"controller_net"
+    bridgeName = str(yFile["tenantID"])+"controller_br"
     if "vms" in yFile:
-        for i in range(len(yFile["vms"])):
-            print(str(yFile["vms"][i]["vmName"]))
-            subprocess.call(["sudo bash deleteVM.sh "+str(yFile["vms"][i]["vmName"])],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Controller : "+ str(yFile["vms"][i]["vmName"])+"\n")
+        for vm in yFile["vms"]:
+            print("Deleting  VM "+str(vm["vmName"]))
+
+            command = "sudo ansible-playbook " + DELETE_VM_SCRIPT + " -e hypervisor=" + yFile['hypervisorType']+" -e vm_name="+str(vm["vmName"])+" -e network="+networkName
+            subprocess.call([command],shell=True)
+            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Controller : " + command + "\n")
+
     if yFile['controllerNet'].lower()=="y":
-        subprocess.call(["sudo bash deleteContNet.sh "+str(yFile["tenantID"])],shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting ControllerNet : "+ str(yFile["tenantID"])+"\n")
+        print("Deleting  Controller ")
+        command = "sudo ansible-playbook " + DELETE_NETWORK_SCRIPT + " -e hypervisor=" + yFile['hypervisorType'] + " -e network_name="+networkName+ " -e bridge_name="+bridgeName
+        subprocess.call([command],shell=True)
+        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting ControllerNet : " + command + "\n")
+
+        print("Deleting Bridge ")
+        command = "sudo ansible-playbook " + DELETE_BRNS_CONN_SCRIPT + " -e hypervisor=" + yFile['hypervisorType'] + " -e veth1=" +str(yFile["tenantID"])+"_1"
+        subprocess.call([command],shell=True)
+        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating  Bridge  : " + command + "\n")
 
 
 def checkYAML(yFile, logFile):
@@ -54,8 +112,7 @@ def main():
         if yFileName.endswith(".yml") or yFileName.endswith(".yaml"):
             try:
                 #open the yaml file
-                with open(yFileName,'r') as file:
-                    yFile = yaml.load(file)
+                yFile = read_yaml_data(yFileName)
                 checkYAML(yFile, logFile)
                 # check for the 1st argument i.e., create or delete
                 if str(sys.argv[1]).lower()=="delete":
@@ -64,7 +121,7 @@ def main():
                     
                 elif str(sys.argv[1]).lower()=="create":
                     logging.info("\nPerforming create operation depending upon the file")
-                    createFunc(yFile["tenantInfo"],yFileName, logFile)
+                    createFunc(yFile["tenantInfo"], logFile)
                 else:
                     logging.error("\nERROR: Unrecognized Command!!!")
                     logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Wrong Command : "+ str(sys.argv)+"\n")
