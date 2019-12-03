@@ -4,29 +4,23 @@ import logging
 import subprocess
 import time
 
-def createFunc(yFile, yFileName, logFile):
+def createFunc(yFile, yFileName):
     if yFile['controllerNet'].lower()=="y":
         if yFile['cloud']=="pri":
             subprocess.call(["sudo ansible-playbook createControllerNetwork.yaml -e file=" + yFileName + " -vvv"],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Primary Controller  "+"\n")
-
         elif yFile['cloud']=="sec":
             subprocess.call(["sudo ansible-playbook createControllerNetwork_hyp.yaml -e file=" + yFileName + " -vvv"],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Secondary Controller  "+"\n")
     if "vms" in yFile:
         subprocess.call(["sudo ansible-playbook createControllerVM.yaml -e file=" + yFileName + " -vvv"],shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Controller VM  "+"\n")
 
-def deleteFunc(yFile, logFile):
+def deleteFunc(yFile):
     print("executing delete")
     if "vms" in yFile:
         for i in range(len(yFile["vms"])):
             print(str(yFile["vms"][i]["vmName"]))
             subprocess.call(["sudo bash deleteVM.sh "+str(yFile["vms"][i]["vmName"])],shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Controller : "+ str(yFile["vms"][i]["vmName"])+"\n")
     if yFile['controllerNet'].lower()=="y":
         subprocess.call(["sudo bash deleteContNet.sh "+str(yFile["tenantID"])],shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting ControllerNet : "+ str(yFile["tenantID"])+"\n")
 
 
 def checkYAML(yFile, logFile):
@@ -40,8 +34,9 @@ def checkYAML(yFile, logFile):
         exit(0)
 
 def main():
-
-  fileName = "/var/log/log_"+time.strftime("%Y%m%d")+".txt"
+  #file = sys.argv[1]
+  #createVPC(file)
+  fileName = "/tmp/logs/log_"+time.strftime("%Y%m%d")+".txt"
   logFile = open(fileName, 'a+')
 
   if(len(sys.argv)<2):
@@ -60,11 +55,13 @@ def main():
                 # check for the 1st argument i.e., create or delete
                 if str(sys.argv[1]).lower()=="delete":
                     print("\nPerforming delete operation depending upon the file")
-                    deleteFunc(yFile["tenantInfo"], logFile)
-                    
+                    deleteFunc(yFile["tenantInfo"])
+                    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting Controller : "+ str(yFile["vms"][i]["vmName"])+"\n")
                 elif str(sys.argv[1]).lower()=="create":
                     logging.info("\nPerforming create operation depending upon the file")
-                    createFunc(yFile["tenantInfo"],yFileName, logFile)
+                    createFunc(yFile["tenantInfo"],yFileName)
+                    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating Controller : "+ str(yFile["vms"][i]["vmName"])+"\n")
+
                 else:
                     logging.error("\nERROR: Unrecognized Command!!!")
                     logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Wrong Command : "+ str(sys.argv)+"\n")

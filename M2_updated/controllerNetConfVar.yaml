@@ -1,0 +1,16 @@
+--- 
+tenantInfo: 
+  hypervisorType: "primary"
+  controllerNet: "Y"
+  tenantID: 50
+  tenantName: t50
+  vms: 
+    - 
+      mem: 8192 
+      vcpu: 4
+      vmName: t50controller1
+
+  
+
+
+

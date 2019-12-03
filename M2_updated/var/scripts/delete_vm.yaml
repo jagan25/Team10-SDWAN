@@ -1,0 +1,29 @@
+---
+-
+  gather_facts: false
+  hosts: '{{ hypervisor}}'
+  tasks:
+    -
+      name: Stop the vm
+      virt:
+        name: '{{ vm_name }}'
+        command: destroy
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Undefine the vm
+      virt:
+        name: '{{ vm_name }}'
+        command: undefine
+      become: yes
+      ignore_errors: yes
+    -
+      name: Delete .img file for '{{ vm_name }}'
+      shell: 'rm -rf {{vm_disk_location}}/{{ vm_name }}.img'
+      become: yes
+      ignore_errors: yes 
+  vars:
+    image_location: /var/lib/libvirt/images/skundalVM1.img
+    vm_disk_location: /var/lib/libvirt/images
+

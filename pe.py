@@ -4,30 +4,21 @@ import logging
 import subprocess
 import time
 
-def createPE(yFile, yFileName, logFile):
+def createPE(yFile, yFileName):
     print("creating pe")
     if "IPrange" in yFile:
         subprocess.call(["sudo ansible-playbook create_PEnetwork.yaml -e file=" + yFileName + " -vvv"], shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating IP Ranges for PE : "+ str(yFile["tenant_name"])+"\n")
-
     if "vms" in yFile:
         subprocess.call(["sudo ansible-playbook create_PE.yaml -e file=" + yFileName + " -vvv"], shell=True)
-        for i in range(len(yFile['vms'])):
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating PE : "+ str(yFile['vms'][i]['PE_name'])+"\n")
 
-
-def deletePE(yFile, logFile):
+def deletePE(yFile):
     if 'vms' in yFile:
         for i in range(len(yFile['vms'])):
             print(str(yFile['vms'][i]['PE_name']))
             subprocess.call(["sudo bash deleteVM.sh " + str(yFile["tenant_name"])+"_"+(yFile["vms"][i]["PE_name"])], shell=True)
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting PE : "+ str(yFile["tenant_name"])+"_"+(yFile["vms"][i]["PE_name"]) +"\n")
-
     if 'IPrange' in yFile:
         print(yFile)
         subprocess.call(["sudo bash deletePENet.sh " + str(yFile["tenant_name"])],shell=True)
-        logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting IPRange for PE : "+ str(yFile["tenant_name"]) +"\n")
-
 
 def checkYaml(yFile, logFile):
     if 'PE' not in yFile:
@@ -38,10 +29,9 @@ def checkYaml(yFile, logFile):
         print("ERROR!!! Cannot process the given YAML file. MISSING KEYS!!!")
         logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   ERROR!!! Cannot process the given YAML file. MISSING KEYS!!! : "+ str(sys.argv) +"\n")
         exit(0)
-
 def main():
 
-    fileName = "/var/log/log_"+time.strftime("%Y%m%d")+".txt"
+    fileName = "/tmp/logs/log_"+time.strftime("%Y%m%d")+".txt"
     logFile = open(fileName, 'a+')
 
     if(len(sys.argv)<2):
@@ -59,20 +49,20 @@ def main():
                 with open(yFileName, 'r') as file:
                     yFile = yaml.load(file)
                 #print(yFile)
-                checkYaml(yFile, logFile)
+                checkYaml(yFile)
                 # check for the 1st argument i.e., create or delete
                 if str(sys.argv[1]).lower() == "delete":
                     print("Performing delete operation depending upon the file")
-                    deletePE(yFile['PE'], logFile)
+                    deletePE(yFile['PE'])
+                    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Deleting PE : "+ str(yFile["tenant_name"])+"_"+(yFile["vms"][i]["PE_name"]) +"\n")
                 elif str(sys.argv[1]).lower() == "create":
                     print("Performing create operation depending upon the file")
-                    createPE(yFile['PE'], yFileName, logFile)
+                    createPE(yFile['PE'], yFileName)
+                    logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Creating PE : "+ str(yFile["tenant_name"])+"_"+(yFile["vms"][i]["PE_name"])+"\n")
             except:
                 print("ERROR!!!")
                 logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Error In Executing Command : "+ str(sys.argv) +"\n")
-        else:
-            logFile.write(time.strftime("%Y%m%d-%H%M%S")+"   Error In Executing Command : "+ str(sys.argv) +"\n")
-            
+
     logFile.close()
 
 if __name__ == '__main__':

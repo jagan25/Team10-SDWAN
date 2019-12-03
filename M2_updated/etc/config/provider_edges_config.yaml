@@ -1,0 +1,9 @@
+ProviderEdges:
+  t50_PE1:
+    customer_edges: []
+    ip: 50.0.0.137
+  t50_PE2:
+    customer_edges:
+    - t50_ns2CE1
+    - t50_ns1CE1
+    ip: 50.0.0.150

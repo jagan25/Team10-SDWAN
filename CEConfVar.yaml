@@ -2,8 +2,8 @@
 site:
   cloud: "pri"
   siteID: 1
-  tenantID: 20
-  siteNS: t20_ns1
+  tenantID: 50
+  siteNS: t50_ns1
   vms:
     -
       mem: 512

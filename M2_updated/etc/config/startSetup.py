@@ -26,7 +26,7 @@ def showCreate():
             elif option=='5':
                 #create CE_PE connection file
                 config_file = input("Enter the CE-PE configuration file name: ")
-                subprocess.call(['sudo python3 createCEPEnet.py create '+config_file], shell = True)
+                subprocess.call(['sudo python3 createCEPENet.py create '+config_file], shell = True)
             else:
                 print("INVALID OPTION! Please enter a valid option! \n\n")
                 showCreate()
@@ -56,7 +56,7 @@ def showDelete():
             elif option=='5':
                 #delete CE-PE CONNECTION
                 config_file = input("Enter the CE-PE configuration file name: ")
-                subprocess.call(['sudo python3 createCEPEnet.py delete '+config_file], shell = True)
+                subprocess.call(['sudo python3 createCEPENet.py delete '+config_file], shell = True)
             else:
                 print("INVALID OPTION! Please enter a valid option! \n\n")
                 showDelete()
