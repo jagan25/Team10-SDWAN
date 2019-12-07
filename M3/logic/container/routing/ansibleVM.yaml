@@ -1,0 +1,22 @@
+---
+- hosts: vm
+  gather_facts: no
+  vars:
+     container: "{{ container }}"
+
+  tasks:
+   #- name: Get infos on container
+    # docker_container_info:
+     #   name: mydata
+    # register: result
+
+   - name : Shell
+     shell: docker inspect -f '{''{.State.Running}''}' "{{container}}"
+     #shell : docker container ps -a | grep container1 | grep 'Up'
+     register: result
+     become: yes
+
+
+   - name: Print information about container
+     debug:
+        var: result.stdout
