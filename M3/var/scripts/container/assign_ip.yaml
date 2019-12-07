@@ -1,0 +1,9 @@
+---
+-
+  gather_facts: false
+  hosts: '{{ hypervisor }}'
+  tasks:
+    - name: Assign ip address to the container interface
+      command: "docker exec --privileged {{ container }} ip addr add {{ ip }} dev {{veth}}"
+      become: yes
+      ignore_errors: yes

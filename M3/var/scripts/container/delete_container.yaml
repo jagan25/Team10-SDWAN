@@ -1,0 +1,13 @@
+---
+- hosts: '{{hypervisor}}'
+  gather_facts: no
+  tasks:
+  - name: Stop Container 
+    command: "docker stop {{container}}"
+    become: yes
+    ignore_errors: yes
+
+  - name: Remove Container
+    command: "docker rm {{container}}"
+    become: yes
+    ignore_errors: yes

@@ -1,0 +1,47 @@
+---
+-
+  gather_facts: false
+  hosts: '{{ hypervisor }}'
+  tasks:
+    -
+      name: Create veth pair 
+      shell: 'ip link add {{ veth1 }} type veth peer name {{ veth2 }}'
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Turn veth1 up
+      shell: 'ip link set dev {{ veth1 }} up'
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Add veth1 to bridge
+      shell: 'brctl addif {{ bridge_name }} {{ veth1 }}'
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Add veth2 to namespace
+      shell: 'ip link set dev {{ veth2 }} netns {{ namespace }}'
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Turn veth2 up
+      shell: 'ip netns exec {{ namespace }} ip link set dev {{ veth2 }} up'
+      become: yes
+      ignore_errors: yes
+
+
+    - name: Assign ip address to the container interface
+      command: "ip netns exec {{ namespace }} ip addr add {{ ip }} dev {{veth2}}"
+      become: yes
+      when: option == "assign_ip"
+      ignore_errors: yes
+
+    - name: Run dhclient
+      shell: 'ip netns exec {{ namespace }} dhclient {{ veth2 }}'
+      become: yes
+      when: option == "run_dhclient"
+      ignore_errors: yes

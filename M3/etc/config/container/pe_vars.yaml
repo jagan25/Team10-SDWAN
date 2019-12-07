@@ -1,0 +1,15 @@
+--- 
+PE: 
+  change_net: "y"
+  containers: 
+    - 
+      PE_name: PE1
+      id: 1
+      image: hw4
+    - 
+      PE_name: PE2
+      id: 2
+      image: hw4
+  hypervisorType: primary
+  tenant_id: 50
+  tenant_name: t50

@@ -1,0 +1,36 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+          - name: Define the network
+            virt_net:
+                    name: "{{network_name}}"
+                    command: define
+                    xml: "{{ lookup('template', 'templates/router_template.xml.j2') }}"
+            ignore_errors: yes
+
+          - name: Start the network
+            virt_net:
+                    name: "{{network_name}}"
+                    command: create
+            ignore_errors: yes
+
+          - name: create VXLAN
+            shell: 'ip link add name {{ vxlan_name }}-vxlan type vxlan id {{ id }} dev ens5 remote {{ remoteIP }} dstport 4789'
+            become: yes
+            when: option == "create_vxlan"
+            ignore_errors: yes
+
+          - name: Turn VXLAN interface up
+            shell: 'ip link set {{ vxlan_name }}-vxlan up'
+            become: yes
+            when: option == "create_vxlan"
+            ignore_errors: yes
+
+          - name: Attach vxlan interface to the bridge
+            shell: 'brctl addif {{ bridge_name }} {{ vxlan_name }}-vxlan'
+            become: yes
+            when: option == "create_vxlan"
+            ignore_errors: yes
+

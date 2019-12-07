@@ -1,0 +1,23 @@
+---
+tenant:
+        tenant_id: 50
+        tenant_name: 't50'
+        change_site: 'y'
+        change_net: 'y'
+        change_container: 'y'
+        hypervisorType: 'primary'
+        site: 'ns2'
+        site_id: 2
+        site_ip_int: '2.2.3.1'
+        site_ip_ext: '2.2.3.2'
+        networks: [1]
+        PE: [1, 2]
+router:
+   - container_id: 1
+     change_link: 'n'
+     networks: [1]
+     image: hw4
+   - container_id: 2
+     change_link: 'n'
+     networks: [1]
+     image: hw4

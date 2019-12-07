@@ -1,0 +1,9 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Run dhclient
+      shell: 'docker exec --privileged {{ container }} dhclient'
+      become: yes
+      ignore_errors: yes

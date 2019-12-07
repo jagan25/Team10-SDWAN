@@ -1,0 +1,13 @@
+---
+CE:
+  tenant_id: 50
+  tenant_name: t50
+  site: ns1
+  site_id: 1
+  hypervisorType: primary
+  delete_container: 'y'
+  container:
+    - image: hw4
+      id: 1
+      delete_link: 'y'
+      PE: [1, 2]

@@ -1,0 +1,31 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Destroy the network
+      virt_net:
+        name: "{{network_name}}"
+        command: destroy
+      ignore_errors: yes
+
+    - name: Undefine the network
+      virt_net:
+        name: "{{network_name}}"
+        command: undefine
+      ignore_errors: yes
+
+    - name: Set the bridge down
+      command: "sudo ifconfig {{bridge_name}} down"
+      ignore_errors: yes
+
+    - name: Delete the bridge
+      command: "sudo brctl delbr {{bridge_name}}"
+      ignore_errors: yes
+
+    - name: Delete vxlan interface
+      shell: 'ip link del dev {{ vxlan_name }}-vxlan'
+      become: yes
+      when: option == 'delete_vxlan'
+      ignore_errors: yes
+
