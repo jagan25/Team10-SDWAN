@@ -1,0 +1,33 @@
+---
+-
+  gather_facts: false
+  hosts: '{{ hypervisor }}'
+  tasks:
+    -
+      name: Copying template file for '{{ vm_name }}'
+      copy:
+        dest: '{{ vm_disk_location }}/{{ vm_name }}.img'
+        src: '{{ image_location }}'
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Create the vm
+      virt:
+        command: define
+        name: '{{ vm_name }}'
+        xml: "{{ lookup( \"template\", \"templates/vm_template.xml.j2\" ) }}"
+      become: yes
+      ignore_errors: yes
+
+    -
+      name: Start the vm
+      virt:
+        name: '{{ vm_name }}'
+        state: running
+      become: yes
+      ignore_errors: yes
+
+  vars:
+    image_location: /var/lib/libvirt/images/skundalVM1.img
+    vm_disk_location: /var/lib/libvirt/images

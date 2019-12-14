@@ -1,0 +1,14 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Destroy the network
+      virt_net: 
+        name: "{{network_name}}"
+        command: destroy
+
+    - name: Undefine the network
+      virt_net:
+        name: "{{network_name}}"
+        command: undefine

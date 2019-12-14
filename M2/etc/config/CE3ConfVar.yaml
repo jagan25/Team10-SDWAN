@@ -1,0 +1,14 @@
+---
+site:
+  cloud: "sec"
+  siteID: 3
+  tenantID: 50
+  siteNS: t50_ns3
+  vms:
+    -
+      mem: 512
+      vcpu: 2
+      vmName: CE1
+      vmID: 1
+      IPrange: 17.0.0.1,17.0.0.254
+

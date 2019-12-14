@@ -1,7 +1,0 @@
---- 
-tenantInfo: 
-  hypervisorType: "secondary"
-  controllerNet: "Y"
-  tenantID: 50
-  tenantName: t50
-  remoteIP: "192.168.124.70"

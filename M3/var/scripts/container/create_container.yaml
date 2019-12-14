@@ -1,8 +1,0 @@
----
-- hosts: '{{hypervisor}}'
-  gather_facts: no
-  tasks:
-  - name: Create container
-    command: 'docker run -itd --name={{container}} {{image}}'
-    become: yes
-    ignore_errors: yes

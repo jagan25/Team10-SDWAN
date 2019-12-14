@@ -1,0 +1,30 @@
+---
+site:
+        - id: 1
+          pid: 
+                - 1
+                - 2 
+          hypervisor: primary
+          network:
+                - 1.0.0.0/24
+                - 2.0.0.0/24
+
+        - id: 2
+          pid: 
+                - 1
+                - 2
+          hypervisor: primary
+          network:
+                - 3.0.0.0/24
+
+
+        - id: 3
+          pid: 
+                - 3
+          hypervisor: secondary
+          network:
+                - 4.0.0.0/24
+
+
+
+

@@ -1,0 +1,12 @@
+---
+CE:
+  tenant_id: 50
+  tenant_name: t50
+  site: ns1
+  site_id: 4
+  hypervisorType: primary
+  vms:
+    - vcpu: 4
+      mem: 2048
+      CE_name: CE1
+

@@ -1,0 +1,1 @@
+{"ProviderEdges": [{"t10PE1": {"ip": "10.0.1.199", "CustomerEdges": ["t10ns1CE2", "t10ns1CE2", "t10ns1CE2"], "containers": ["t10ns1CE2", "t10ns1CE2", "t10ns1CE2", "t10ns1CE2", "t10ns1CE2"]}}]}

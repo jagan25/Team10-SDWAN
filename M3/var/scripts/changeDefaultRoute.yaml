@@ -1,0 +1,16 @@
+---
+- name: change default route table
+  vars_files:
+      - changeRouteVars.yaml
+  hosts: "{{ip}}" 
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Remove the default route
+      command: "sudo ip route del to default via {{oldInterface}}"
+
+    - name: Add the default route
+      command: "sudo ip route add default via {{newInterface}}"
+   
+

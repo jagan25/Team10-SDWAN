@@ -1,0 +1,10 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Run DHClient
+      command: "ip netns exec {{ namespace }}  dhclient {{ veth }}"
+      become: yes
+      ignore_errors: yes
+

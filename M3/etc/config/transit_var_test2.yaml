@@ -1,0 +1,7 @@
+---
+tenant:
+    tenant_id: 20
+    tenant_name: t20
+    transit_id: 1
+    hypervisorType: secondary
+    remote_ip: 20.0.0.1

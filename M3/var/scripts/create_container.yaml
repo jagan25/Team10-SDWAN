@@ -1,0 +1,13 @@
+---
+- hosts: '{{hypervisor}}'
+  gather_facts: no
+  tasks:
+  - name: Create container
+    command: "docker run --privileged -itd --name={{container}} {{image}}"
+    become: yes
+    ignore_errors: yes
+  
+  - name: Collect IP
+    shell: "docker exec --privileged {{container}} ip a | grep {{ tid }}.0.1 | awk {%raw%} '{print $2}'{%endraw%}"
+    become: yes
+    ignore_errors: yes

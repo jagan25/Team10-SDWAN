@@ -1,0 +1,25 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Create a bridge 
+      command: "sudo brctl addbr {{bridge_name}}"
+      ignore_errors: yes
+
+    - name: Set the bridge up
+      command: "sudo ifconfig {{bridge_name}} up"
+      ignore_errors: yes
+
+    - name: Define the network
+      virt_net:
+        name: "{{network_name}}"  
+        command: define
+        xml: "{{ lookup('template', 'templates/bridge_template.xml.j2' ) }}"
+      ignore_errors: yes
+
+    - name: Start the network
+      virt_net:
+        name: "{{network_name}}"
+        command: create 
+      ignore_errors: yes

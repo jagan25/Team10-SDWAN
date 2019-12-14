@@ -1,0 +1,9 @@
+--- 
+CEPE:
+  tenant_id: 50
+  tenant_name: t50
+  site: ns1
+  site_id: 1
+  hypervisorType: primary
+  CE_name: CE1
+  PEs: ['PE1']

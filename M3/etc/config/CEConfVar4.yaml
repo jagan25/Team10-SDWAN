@@ -1,0 +1,15 @@
+---
+CE:
+  tenant_id: 10
+  tenant_name: t10
+  site: ns1
+  site_id: 1
+  autoscale_min: 1
+  autoscale_max: 2
+  hypervisorType: primary
+  change_container: 'y'
+  container:
+    - image: hw4
+      id: 2
+      change_link: 'y'
+      PE: [1]

@@ -1,0 +1,18 @@
+---
+- name: Get IP Table Rules
+  vars_files:
+    - hostVars.yaml
+    - ipTableCommandVars.yaml
+  hosts: "{{host}}"
+  become: yes
+  become_user: root
+  tasks:
+    - name: Get IP Table Rules With Line Number
+      command: "{{IPTableCommand}}"
+      register: output
+
+    - set_fact:
+        cacheable: yes
+        output: "{{output.stdout}}"
+
+

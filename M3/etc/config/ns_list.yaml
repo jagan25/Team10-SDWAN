@@ -1,0 +1,26 @@
+---
+list:
+        - name: t50_transit
+          hypervisor: primary
+
+        - name: t50_transit
+          hypervisor: secondary
+
+        - name: t50PE1
+          hypervisor: primary
+
+        - name: t50PE2
+          hypervisor: primary
+
+        - name: t50PE3
+          hypervisor: secondary
+        
+        - name: t50ns1CE1
+          hypervisor: primary
+
+        - name: t50ns2CE1
+          hypervisor: primary
+
+        - name: t50ns3CE1
+          hypervisor: secondary
+

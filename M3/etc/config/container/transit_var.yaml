@@ -1,7 +1,0 @@
----
-tenant:
-    tenant_id: 50
-    tenant_name: t50
-    transit_id: 1
-    hypervisorType: primary
-    remote_ip: 50.255.0.1

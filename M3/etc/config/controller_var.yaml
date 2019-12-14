@@ -1,0 +1,17 @@
+--- 
+tenantInfo: 
+  hypervisorType: "primary"
+  controllerNet: "Y"
+  tenantID: 10
+  tenantName: t10
+  remoteIP: "192.168.124.107"
+  containers: 
+    - 
+      cName: t10controller1
+      cID: 1
+      image: controller_sd
+
+  
+
+
+

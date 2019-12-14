@@ -1,0 +1,17 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Make the veth interface down
+      command: "sudo ip netns exec {{ns_name}} ip link set dev {{ns_name}}1 down"
+      ignore_errors: yes
+
+    - name: Delete the veth interface
+      command: "sudo ip netns exec {{ns_name}} ip link del dev {{ns_name}}1"
+      ignore_errors: yes
+
+    - name: Delete the namespace
+      command: "sudo ip netns del {{ns_name}}" 
+      ignore_errors: yes
+

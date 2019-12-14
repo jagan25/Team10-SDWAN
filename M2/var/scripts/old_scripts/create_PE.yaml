@@ -1,0 +1,42 @@
+---
+- vars_files:
+    - '{{ file }}'
+  hosts: localhost
+  gather_facts: no
+  vars:
+    PE_disk_location: /var/lib/libvirt/images
+    PE_image_location: /var/lib/libvirt/images/skundalVM1.img
+    root_pass: root
+  become: yes
+
+  tasks:
+    - debug:
+         msg: "{{PE}}"
+        
+    #Copy Edge Router VM Disk Image 
+    - name: Copy Edge Router VM disk image
+      copy:
+        dest: "{{ PE_disk_location }}/{{PE.tenant_name}}_{{ item.PE_name }}.img"
+        src: "{{PE_image_location}}"
+      with_items: "{{ PE.vms }}"
+
+    #Define new vm
+    - name: Define new vm
+      virt:
+        name: "{{PE.tenant_name}}_{{item.PE_name}}"
+        command: define
+        xml: "{{ lookup('template', 'templates/vm_template.xml.j2') }}"
+      with_items: "{{ PE.vms }}"
+
+    # Create and start new vm
+    - name: Start vm
+      virt:
+        name: "{{PE.tenant_name}}_{{item.PE_name}}"
+        command: create
+      with_items: "{{ PE.vms }}"
+    
+    - name: Attach PE to the transit NS bridge
+      shell: "sudo virsh attach-interface --domain {{PE.tenant_name}}_{{item.PE_name}} --type network {{PE.tenant_name}}_PEnet --model virtio --config --live"
+      with_items: "{{ PE.vms }}"
+      ignore_errors: true
+

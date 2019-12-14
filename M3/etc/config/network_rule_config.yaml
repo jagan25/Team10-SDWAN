@@ -1,0 +1,7 @@
+---
+t50_ns1:
+  - ACTION: DROP
+    PROTOCOL: ICMP
+    SOURCE: 50.0.0.81
+    DESTINATION: 50.0.0.106
+

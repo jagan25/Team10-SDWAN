@@ -1,0 +1,16 @@
+---
+CustomerEdges:
+  t50_ns1CE1:
+      ip: 50.0.0.81
+      cnetwork:
+          r1 : 5.0.0.0/24
+      provider_edges:
+          t50_PE1 : 25.0.0.1
+          t50_PE2 : 35.0.0.1
+  t50_ns2CE1:
+      ip: 50.0.0.106
+      cnetwork:
+          r2 : 6.0.0.0/24
+      provider_edges:
+          t50_PE1 : 26.0.0.1
+          t50_PE2 : 36.0.0.1

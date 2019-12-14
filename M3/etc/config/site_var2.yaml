@@ -1,0 +1,21 @@
+---
+tenant:
+        tenant_id: 10
+        tenant_name: 't10'
+        change_site: 'y'
+        change_net: 'y'
+        change_container: 'y'
+        hypervisorType: 'primary'
+        site: 'ns2'
+        site_id: 2
+        site_ip_int: '2.1.3.1'
+        site_ip_ext: '2.1.3.2'
+        networks: [1]
+        site_ip: [2.0.0.1/24]
+        PE: [1, 2]
+router:
+   - container_id: 1
+     change_link: 'y'
+     networks: [1]
+     ip: [2.0.0.2/24]
+     image: hw4

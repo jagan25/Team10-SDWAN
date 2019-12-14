@@ -1,0 +1,11 @@
+--- 
+PE: 
+  change_net: "y"
+  containers: 
+    - 
+      PE_name: PE2
+      id: 2
+      image: edge_sd
+  hypervisorType: secondary
+  tenant_id: 20
+  tenant_name: t20

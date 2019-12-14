@@ -1,0 +1,8 @@
+---
+- hosts: "{{hypervisor}}"
+  gather_facts: no
+  become_user: root
+  tasks:
+    - name: Run dnsmasq
+      command: "sudo ip netns exec {{ns_name}} dnsmasq --interface={{interface}} --dhcp-range={{start_ip}},{{end_ip}},12h --bind-interface --except-interface=lo"
+      ignore_errors: yes

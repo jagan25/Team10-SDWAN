@@ -1,0 +1,22 @@
+---
+-
+  gather_facts: false
+  hosts: '{{ hypervisor }}'
+  tasks:
+    - name: Assign ip address routes in the transit namespace via nexthop IP
+      command: "ip netns exec {{ transit_name }} ip route add {{ network }} via {{ nh }}"
+      when: option1 == "transit" and option2 == "normal"
+      become: yes
+      ignore_errors: yes
+
+    - name: Assign ip address routes in the transit namespace via gre tunnel
+      command: "ip netns exec {{ transit_name }} ip route add {{ network }} dev {{ nh }}"
+      when: option1 == "transit" and option2 == "gre"
+      become: yes
+      ignore_errors: yes
+
+    - name: Assign ip address routes in the containers
+      command: "docker exec --privileged {{ container }} ip route add {{ network }} via {{ nh }}"
+      when: option1 == "normal" and option2 == "normal"
+      become: yes
+      ignore_errors: yes
