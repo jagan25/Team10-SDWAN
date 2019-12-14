@@ -1,5 +1,0 @@
----
-tenant:
-    tenant_id: 50
-    tenant_name: t50
-    hypervisorType: primary

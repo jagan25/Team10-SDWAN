@@ -1,8 +1,0 @@
---- 
-tenantInfo: 
-    cloud: "pri"
-    controllerNet: "Y"
-    remoteIP: "192.168.124.107"
-    tenantID: 20
-    tenantName: t20
-

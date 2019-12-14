@@ -1,2 +1,0 @@
-IPTableCommands:
-- iptables -I INPUT 1 -p ICMP -s 50.0.0.81 -d 50.0.0.106 -j DROP

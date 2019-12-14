@@ -1,1 +1,0 @@
-{"uuid": "5cae432a-717b-4852-803a-b1d793117170", "stdout": "\u001b[0;31m        name: \"{{routers[\"networkName\"]}}\"\u001b[0m", "counter": 10, "end_line": 10, "runner_ident": "783a67f0-e360-4b39-929d-49ab6947a25d", "start_line": 9, "event": "verbose"}
